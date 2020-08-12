@@ -55,7 +55,7 @@ git checkout -b v19.1.8 tags/v19.1.8
 cp $CWD/patches/* .
 git apply cockroach_makefile.patch
 git apply jemalloc_stats_test.patch
-make buildoss
+make buildoss > build_log.txt
 # Execute tests
 echo "The tests for the following packages consistently fail:
   pkg/cli
@@ -65,5 +65,9 @@ and those for the following packages fail occassionally, but pass when executed 
   pkg/sql/logictest
 This result has been confirmed to be in parity with intel though."
 export GOMAXPROCS=4
-make test TESTFLAGS='-v -count=1' GOFLAGS='-p 1'
+make test TESTFLAGS='-v -count=1' GOFLAGS='-p 1' > test_log.txt
 
+# create tarball 
+tar czf cockroachdb_ubi.tar.gz cockroachoss build_log.txt test_log.txt
+mv cockroachdb_ubi.tar.gz /cockroachdb_ubi.tar.gz
+ln -s ./cockroachoss /usr/bin/cockroach
