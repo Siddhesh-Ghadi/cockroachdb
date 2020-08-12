@@ -8,4 +8,11 @@ before_install:
   - docker pull registry.access.redhat.com/ubi7/ubi:latest
   
 script:
+  - mkdir out	
   - docker run -v `pwd`:/root/build --workdir=/root/build --name ubi7_cockroachdb registry.access.redhat.com/ubi7/ubi:latest /bin/bash -c "bash cockroachdb_ubi7.sh"
+  - docker cp ubi7_cockroachdb:/cockroachdb_ubi.tar.gz out/
+  - docker commit ubi7_cockroachdb cockroachdb_ubi7
+  - docker ps
+  - docker stop ubi7_cockroachdb
+  - docker rm ubi7_cockroachdb
+  - docker images
